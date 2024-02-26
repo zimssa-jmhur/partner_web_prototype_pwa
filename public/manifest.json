@@ -1,0 +1,35 @@
+{
+  "name": "Zimssa Partner PWA",
+  "short_name": "Zimssa Partner PWA",
+  "description": "For Zimssa Partner PWA",
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
+  "display": "fullscreen",
+  "orientation": "portrait",
+  "id": "/",
+  "scope": "/",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "android/xxxhdpi.png",
+      "sizes": "192x192",
+      "purpose": "maskable"
+    },
+    {
+      "src": "android/xxhdpi.png",
+      "sizes": "144x144"
+    },
+    {
+      "src": "android/xhdpi.png",
+      "sizes": "96x96"
+    },
+    {
+      "src": "android/mdpi.png",
+      "sizes": "72x72"
+    },
+    {
+      "src": "android/hdpi.png",
+      "sizes": "48x48"
+    }
+  ]
+}
