@@ -53,4 +53,11 @@ const nextConfig = {
   },
 };
 
-module.exports = isDev ? nextConfig : withPWA(nextConfig);
+module.exports = withPWA({
+  pwa: {
+    ...nextConfig,
+    disable: isDev ? true : false,
+    register: true,
+    scope: '/app',
+  },
+});
