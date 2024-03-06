@@ -1,7 +1,77 @@
+'use client';
+import React, { useEffect } from 'react';
+import { getMessaging, onMessage } from 'firebase/messaging';
+import firebaseApp from './utils/firebase/firebase';
+import useFcmToken from './hooks/useFcmToken';
+
 import Image from 'next/image';
 import Link from 'next/link';
 
 export default function Home() {
+  const { fcmToken, notificationPermissionStatus } = useFcmToken();
+  // Use the token as needed
+  fcmToken && console.log('FCM token:', fcmToken);
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+      const messaging = getMessaging(firebaseApp);
+      const unsubscribe = onMessage(messaging, (payload) => {
+        console.log('Foreground push notification received:', payload);
+        const { notification } = payload;
+        new Notification(notification?.title || '', {
+          body: notification?.body,
+        });
+        // if ('Notification' in window && Notification.permission === 'granted') {
+        //   console.log('is this working???');
+        //   new Notification(notification?.title || '', {
+        //     body: notification?.body,
+        //   });
+        // }
+        // Handle the received push notification while the app is in the foreground
+        // You can display a notification or update the UI based on the payload
+      });
+      return () => {
+        unsubscribe(); // Unsubscribe from the onMessage event
+      };
+    }
+    if ('Notification' in window && Notification.permission === 'granted') {
+      new window.Notification('이그슨 메시지', {
+        body: '이그슨 바디',
+      });
+    }
+  }, []);
+  const sendMessage = () => {
+    const title = '궁금해 약';
+    const body = '약을 복용할 시간입니다!';
+    const icon = '/images/logo.png';
+    const options = { body, icon };
+
+    return new Notification(title, options);
+  };
+  const localNotification = async () => {
+    if ('Notification' in window && Notification.permission === 'granted') {
+      console.log('is this working???');
+      // navigator.serviceWorker.ready.then(function (registration) {
+      //   registration.showNotification('이그슨 메시지' || '', {
+      //     body: '이그슨 바디',
+      //     actions: [
+      //       { title: '화면보기', action: 'goTab' },
+      //       { title: '닫기', action: 'close' },
+      //     ],
+      //   });
+      // });
+      new window.Notification('이그슨 메시지', {
+        body: '이그슨 바디',
+      });
+    } else {
+      console.log('is this working???2');
+      const result = await Notification.requestPermission();
+      if (result === 'granted') {
+        sendMessage();
+      }
+    }
+  };
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
@@ -119,6 +189,18 @@ export default function Home() {
             LinkToAboutPage
           </p>
         </Link>
+        <h2
+          className={`mb-3 text-2xl font-semibold`}
+          onClick={localNotification}
+        >
+          ShowNotification{' '}
+          <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
+            -&gt;
+          </span>
+        </h2>
+        <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
+          Instantly deploy your Next.js site to a shareable URL with Vercel.
+        </p>
       </div>
     </main>
   );
